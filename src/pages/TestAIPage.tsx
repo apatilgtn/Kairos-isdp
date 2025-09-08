@@ -1,11 +1,11 @@
 import React from 'react';
 import { PageLayout } from '@/components/PageLayout';
-import { AITestingDashboard } from '@/components/AITestingDashboard';
+import { ComprehensiveTestDashboard } from '@/components/ComprehensiveTestDashboard';
 
 export const TestAIPage: React.FC = () => {
   return (
     <PageLayout>
-      <AITestingDashboard />
+      <ComprehensiveTestDashboard />
     </PageLayout>
   );
 };

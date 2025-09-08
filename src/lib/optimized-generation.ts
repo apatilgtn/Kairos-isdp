@@ -261,6 +261,45 @@ Major work packages with estimated effort
 Be specific and measurable to prevent scope creep. Professional PM format.`,
     temperature: 0.2,
     maxTokens: 1200
+  },
+
+  rfp: {
+    systemPrompt: "You are an expert procurement specialist creating comprehensive RFPs that attract qualified vendors and facilitate effective vendor selection.",
+    userPrompt: (project: MVPProject) => `Create a Request for Proposal (RFP) for "${project.name}" in ${project.industry}.
+
+Problem: ${project.problem_statement}
+
+Structure:
+## Executive Summary
+Project overview, objectives, timeline, budget range, key success factors
+
+## Project Requirements
+- Functional requirements and specifications
+- Technical requirements and standards
+- Performance and security requirements
+- Integration and compatibility needs
+
+## Vendor Requirements
+- Minimum qualifications and experience
+- Required certifications and credentials
+- Portfolio and reference requirements
+- Team composition and expertise
+
+## Evaluation Criteria
+- Technical approach and methodology (40%)
+- Vendor qualifications and experience (25%)
+- Cost and pricing structure (20%)
+- Timeline and project management (15%)
+
+## Proposal Format
+- Required sections and structure
+- Submission guidelines and deadlines
+- Q&A process and timeline
+- Contract terms and conditions
+
+Create a professional RFP that enables fair vendor evaluation and selection.`,
+    temperature: 0.2,
+    maxTokens: 2000
   }
 };
 

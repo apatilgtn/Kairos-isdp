@@ -54,7 +54,7 @@ export interface LLMConfig {
 
 // Default configuration
 const DEFAULT_CONFIG: LLMConfig = {
-  endpoint: 'http://localhost:4001/api/generate', // Updated to match LLM backend
+  endpoint: 'http://localhost:4001/api/generate', // LLM backend service
   models: {
     default: 'llama2', // Default general-purpose model
     advanced: 'mistral', // Default advanced model
@@ -128,9 +128,10 @@ export class OpenSourceLLMService {
         if (authData) {
           const user = JSON.parse(authData);
           authToken = user?.uid;
+          console.log('✅ Found user token from kairos-auth-user');
         }
       } catch (e) {
-        console.error('Failed to parse new auth data:', e);
+        console.warn('Failed to parse new auth data:', e);
       }
       
       // Fallback to old auth system
@@ -140,14 +141,17 @@ export class OpenSourceLLMService {
           if (oldAuthData) {
             const parsed = JSON.parse(oldAuthData);
             authToken = parsed?.state?.user?.uid;
+            console.log('✅ Found user token from mvp-auth-storage');
           }
         } catch (e) {
-          console.error('Failed to parse old auth data:', e);
+          console.warn('Failed to parse old auth data:', e);
         }
       }
       
+      // Demo fallback - provide a demo token for non-authenticated users
       if (!authToken) {
-        throw new Error('Authentication Required - Please log in to access AI services');
+        authToken = 'demo-user-token';
+        console.log('🎭 Using demo token for AI request (user not logged in)');
       }
 
       // Prepare the request payload
@@ -446,9 +450,10 @@ export const chat = {
         if (authData) {
           const user = JSON.parse(authData);
           authToken = user?.uid;
+          console.log('✅ Chat: Found user token from kairos-auth-user');
         }
       } catch (e) {
-        console.error('Failed to parse new auth data:', e);
+        console.warn('Failed to parse new auth data:', e);
       }
       
       // Fallback to old auth system
@@ -458,18 +463,25 @@ export const chat = {
           if (oldAuthData) {
             const parsed = JSON.parse(oldAuthData);
             authToken = parsed?.state?.user?.uid;
+            console.log('✅ Chat: Found user token from mvp-auth-storage');
           }
         } catch (e) {
-          console.error('Failed to parse old auth data:', e);
+          console.warn('Failed to parse old auth data:', e);
         }
+      }
+      
+      // Demo fallback for chat
+      if (!authToken) {
+        authToken = 'demo-chat-token';
+        console.log('🎭 Chat: Using demo token (user not logged in)');
       }
       
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          // Get auth token from localStorage
-          'Authorization': `Bearer ${authToken || ''}`
+          // Get auth token from localStorage  
+          'Authorization': `Bearer ${authToken}`
         },
         body: JSON.stringify({
           model: LLM_MODELS.CHAT,

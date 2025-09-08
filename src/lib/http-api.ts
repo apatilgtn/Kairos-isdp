@@ -19,18 +19,19 @@ import { chat } from './open-source-llm';
 const API_BASE_URL = 'http://localhost:4000/api';
 
 // Get auth token from auth store
-const getAuthToken = (): string | null => {
+const getAuthToken = (): string => {
   // Try to get from new simple auth store first
   try {
     const authData = localStorage.getItem('kairos-auth-user');
     if (authData) {
       const user = JSON.parse(authData);
       if (user?.uid) {
+        console.log('✅ HTTP API: Found token from kairos-auth-user');
         return user.uid;
       }
     }
   } catch (e) {
-    console.error('Failed to parse new auth data:', e);
+    console.warn('Failed to parse new auth data:', e);
   }
   
   // Try to get from old auth store
@@ -39,28 +40,37 @@ const getAuthToken = (): string | null => {
     if (authData) {
       const parsed = JSON.parse(authData);
       if (parsed.state?.user?.uid) {
+        console.log('✅ HTTP API: Found token from mvp-auth-storage');
         return parsed.state.user.uid;
       }
     }
   } catch (e) {
-    console.error('Failed to parse old auth data:', e);
+    console.warn('Failed to parse old auth data:', e);
   }
   
   // Fallback: try legacy storage methods
   const token = localStorage.getItem('auth-token');
-  if (token) return token;
+  if (token) {
+    console.log('✅ HTTP API: Found token from legacy auth-token');
+    return token;
+  }
   
   const userData = localStorage.getItem('kairos-user');
   if (userData) {
     try {
       const user = JSON.parse(userData);
-      return user.uid;
+      if (user.uid) {
+        console.log('✅ HTTP API: Found token from legacy kairos-user');
+        return user.uid;
+      }
     } catch (e) {
-      console.error('Failed to parse user data:', e);
+      console.warn('Failed to parse user data:', e);
     }
   }
   
-  return null;
+  // Demo fallback for HTTP API
+  console.log('🎭 HTTP API: Using demo token (no user logged in)');
+  return 'demo-http-token';
 };
 
 // HTTP client with authentication
@@ -73,9 +83,8 @@ const httpClient = {
       ...options.headers,
     };
     
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
-    }
+    // Always include authorization header (demo token if not logged in)
+    headers['Authorization'] = `Bearer ${token}`;
     
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       ...options,
@@ -551,6 +560,21 @@ Generate a diagram that would be valuable for stakeholders to understand the pro
   // Scope Statement Generation
   static async generateScopeStatement(project: MVPProject): Promise<AIGenerationResponse> {
     return OptimizedGenerationService.generateDocument('scopeStatement', project);
+  }
+
+  // RFP Generation
+  static async generateRFP(project: MVPProject): Promise<AIGenerationResponse> {
+    return OptimizedGenerationService.generateDocument('rfp', project);
+  }
+
+  // Roadmap Generation
+  static async generateRoadmap(project: MVPProject): Promise<AIGenerationResponse> {
+    return OptimizedGenerationService.generateDocument('roadmap', project);
+  }
+
+  // Elevator Pitch Generation
+  static async generateElevatorPitch(project: MVPProject): Promise<AIGenerationResponse> {
+    return OptimizedGenerationService.generateDocument('elevatorPitch', project);
   }
 
   // Team management (for future implementation)

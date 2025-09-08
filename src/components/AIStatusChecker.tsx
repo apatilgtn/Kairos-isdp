@@ -39,7 +39,42 @@ export const AIStatusChecker: React.FC = () => {
         return;
       }
 
-      // Test default AI model
+      // Test LLM backend health
+      try {
+        const healthResponse = await fetch('http://localhost:4001/api/health');
+        const healthData = await healthResponse.json();
+        console.log('LLM Backend Health:', healthData);
+
+        if (!healthResponse.ok || healthData.status !== 'ok') {
+          setTestResults(prev => ({ ...prev, error: 'LLM Backend service is not available' }));
+          return;
+        }
+      } catch (error) {
+        console.error('LLM Backend health check failed:', error);
+        setTestResults(prev => ({ ...prev, error: 'Cannot connect to LLM Backend service' }));
+        return;
+      }
+
+      // Test chat AI endpoint
+      try {
+        const chatResponse = await APIService.chat('Hello, this is a test message.');
+        setTestResults(prev => ({ ...prev, aiTest: chatResponse.success }));
+
+        if (!chatResponse.success) {
+          setTestResults(prev => ({ ...prev, error: chatResponse.error || 'Chat AI test failed' }));
+          return;
+        }
+      } catch (error) {
+        console.error('Chat AI test error:', error);
+        setTestResults(prev => ({ 
+          ...prev, 
+          aiTest: false,
+          error: error instanceof Error ? error.message : 'Chat AI test failed'
+        }));
+        return;
+      }
+
+      // Test document generation
       try {
         const testProject = {
           _id: 'test',
@@ -53,27 +88,18 @@ export const AIStatusChecker: React.FC = () => {
           status: 'active' as const
         };
 
-        const defaultResponse = await APIService.generateElevatorPitch(testProject);
-        setTestResults(prev => ({ ...prev, aiTest: defaultResponse.success }));
+        const generationResponse = await APIService.generateElevatorPitch(testProject);
+        setTestResults(prev => ({ ...prev, kimiTest: generationResponse.success }));
 
-        if (!defaultResponse.success) {
-          setTestResults(prev => ({ ...prev, error: defaultResponse.error || 'Default AI test failed' }));
-          return;
+        if (!generationResponse.success) {
+          setTestResults(prev => ({ ...prev, error: generationResponse.error || 'Document generation test failed' }));
         }
-
-        // Test Kimi model via roadmap generation
-        const kimiResponse = await APIService.generateRoadmap(testProject);
-        setTestResults(prev => ({ ...prev, kimiTest: kimiResponse.success }));
-
-        if (!kimiResponse.success) {
-          setTestResults(prev => ({ ...prev, error: kimiResponse.error || 'Kimi AI test failed' }));
-        }
-
       } catch (error) {
-        console.error('AI test error:', error);
+        console.error('Document generation test error:', error);
         setTestResults(prev => ({ 
           ...prev, 
-          error: error instanceof Error ? error.message : 'AI test failed'
+          kimiTest: false,
+          error: error instanceof Error ? error.message : 'Document generation test failed'
         }));
       }
 
@@ -122,7 +148,7 @@ export const AIStatusChecker: React.FC = () => {
           </div>
           
           <div className="flex items-center justify-between">
-            <span className="font-medium">Default AI Model</span>
+            <span className="font-medium">Chat AI Service</span>
             <div className="flex items-center gap-2">
               {getStatusIcon(testResults.aiTest)}
               {getStatusBadge(testResults.aiTest)}
@@ -130,7 +156,7 @@ export const AIStatusChecker: React.FC = () => {
           </div>
           
           <div className="flex items-center justify-between">
-            <span className="font-medium">Kimi AI Model</span>
+            <span className="font-medium">Document Generation</span>
             <div className="flex items-center gap-2">
               {getStatusIcon(testResults.kimiTest)}
               {getStatusBadge(testResults.kimiTest)}
