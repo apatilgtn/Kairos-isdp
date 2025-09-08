@@ -1,0 +1,375 @@
+/**
+ * =====================================
+ *         KAIROS DESIGN SYSTEM
+ * =====================================
+ * 
+ * Project: KAIROS - Intelligent Strategic Document Platform
+ * Type: Enterprise AI-Powered Strategic Planning & Documentation Suite
+ * 
+ * DESIGN PHILOSOPHY
+ * -----------------
+ * Core Principle: Energy, growth, and intelligent automation with vibrant professionalism
+ * Design Style: Modern Enterprise with Energetic & Growth-Focused Visual Language
+ * Emotion Goal: Innovation, productivity, success, and dynamic excellence
+ * 
+ * VISUAL LANGUAGE
+ * ----------------
+ * Primary Focus: Vibrant enterprise interfaces that inspire action and growth
+ * Hierarchy: Dynamic information architecture with energetic visual flow
+ * Whitespace: Strategic spacing that enhances readability while maintaining energy
+ * 
+ * COLOR SYSTEM
+ * -------------
+ * Primary: 45 93% 47% - Vibrant Orange for energy, innovation, and action
+ * Secondary: 142 69% 58% - Success Green for growth, achievement, and progress
+ * Accent: 60 91% 60% - Bright Yellow for attention, creativity, and inspiration
+ * Success: 120 61% 34% - Deep Green for validation and completed tasks
+ * Warning: 39 100% 50% - Energetic Orange for important alerts and calls-to-action
+ * 
+ * TYPOGRAPHY
+ * ----------
+ * Font Family: Nunito - Modern, friendly typeface that combines professionalism with approachability
+ * Display: Bold, confident headers that command attention and inspire action
+ * Body: High-contrast text optimized for excellent readability on vibrant backgrounds
+ * Scale: Dynamic hierarchy reflecting energy levels and importance
+ * 
+ * INTERACTIONS
+ * ------------
+ * Feedback: Vibrant confirmation patterns that celebrate user achievements
+ * Transitions: Smooth 200-300ms easing for energetic yet polished experience
+ * States: Complete coverage ensuring text visibility in all color combinations
+ * 
+ * ACCESSIBILITY
+ * -------------
+ * Contrast: WCAG AA+ compliance with enhanced contrast ratios for vibrant colors
+ * Focus: Clear, high-contrast focus indicators that work on all background colors
+ * Motion: Respectful motion design with accessibility preferences consideration
+ * ====================================
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 99%;
+    --foreground: 0 0% 9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 9%;
+    --primary: 45 93% 47%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 142 30% 93%;
+    --secondary-foreground: 120 61% 16%;
+    --muted: 60 20% 94%;
+    --muted-foreground: 0 0% 40%;
+    --accent: 60 91% 60%;
+    --accent-foreground: 0 0% 9%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 60 30% 85%;
+    --input: 60 30% 85%;
+    --ring: 45 93% 47%;
+    --success: 120 61% 34%;
+    --success-foreground: 0 0% 98%;
+    --warning: 39 100% 50%;
+    --warning-foreground: 0 0% 98%;
+    --chart-1: 45 93% 47%;
+    --chart-2: 142 69% 58%;
+    --chart-3: 60 91% 60%;
+    --chart-4: 39 100% 50%;
+    --chart-5: 270 95% 75%;
+    --radius: 0.75rem;
+    --sidebar-background: 45 20% 96%;
+    --sidebar-foreground: 0 0% 9%;
+    --sidebar-primary: 45 93% 47%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 60 40% 88%;
+    --sidebar-accent-foreground: 0 0% 9%;
+    --sidebar-border: 60 30% 80%;
+    --sidebar-ring: 45 93% 47%;
+  }
+  
+  .dark {
+    --background: 0 0% 7%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 45 93% 55%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 120 20% 15%;
+    --secondary-foreground: 142 69% 75%;
+    --muted: 60 15% 12%;
+    --muted-foreground: 0 0% 65%;
+    --accent: 60 91% 70%;
+    --accent-foreground: 0 0% 9%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 45 93% 55%;
+    --success: 142 69% 45%;
+    --success-foreground: 0 0% 98%;
+    --warning: 39 100% 60%;
+    --warning-foreground: 0 0% 9%;
+    --chart-1: 45 93% 55%;
+    --chart-2: 142 69% 58%;
+    --chart-3: 60 91% 70%;
+    --chart-4: 39 100% 60%;
+    --chart-5: 270 95% 80%;
+    --sidebar-background: 0 0% 9%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 45 93% 55%;
+    --sidebar-primary-foreground: 0 0% 9%;
+    --sidebar-accent: 60 20% 15%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 0 0% 20%;
+    --sidebar-ring: 45 93% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-medium text-sm;
+    font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  }
+  
+  /* Enterprise Typography Enhancements */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+  }
+  
+  h1 {
+    @apply text-2xl lg:text-3xl;
+  }
+  
+  h2 {
+    @apply text-xl lg:text-2xl;
+  }
+  
+  h3 {
+    @apply text-lg lg:text-xl;
+  }
+  
+  /* Premium Interactive Elements */
+  .btn-enterprise {
+    @apply inline-flex items-center justify-center rounded-lg bg-primary px-5 py-2.5 text-xs font-semibold text-primary-foreground shadow-lg transition-all duration-300 hover:bg-primary/90 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
+  }
+  
+  .btn-enterprise-secondary {
+    @apply inline-flex items-center justify-center rounded-lg border-2 border-primary bg-background px-5 py-2.5 text-xs font-semibold text-primary shadow-sm transition-all duration-300 hover:bg-primary hover:text-primary-foreground hover:shadow-md focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
+  }
+  
+  /* Enterprise Card Styling */
+  .card-enterprise {
+    @apply rounded-xl border-2 border-border bg-card shadow-lg transition-all duration-300 hover:shadow-xl hover:border-primary/30;
+  }
+  
+  /* Premium Status Indicators with Enhanced Contrast */
+  .status-success {
+    @apply inline-flex items-center rounded-full bg-success/15 px-2 py-0.5 text-xs font-semibold text-success border border-success/30;
+  }
+  
+  .status-warning {
+    @apply inline-flex items-center rounded-full bg-warning/15 px-2 py-0.5 text-xs font-semibold text-warning border border-warning/30;
+  }
+  
+  .status-info {
+    @apply inline-flex items-center rounded-full bg-accent/15 px-2 py-0.5 text-xs font-semibold text-accent-foreground border border-accent/30;
+  }
+  
+  /* Enterprise Navigation with Enhanced Readability */
+  .nav-enterprise {
+    @apply flex items-center space-x-1 rounded-lg p-1.5 text-xs font-medium text-foreground/80 transition-all duration-200 hover:bg-primary/10 hover:text-primary hover:font-semibold;
+  }
+  
+  .nav-enterprise.active {
+    @apply bg-primary text-primary-foreground shadow-md font-semibold;
+  }
+}
+
+/* Custom Scrollbars for Enterprise Feel */
+@layer utilities {
+  .scrollbar-enterprise::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  .scrollbar-enterprise::-webkit-scrollbar-track {
+    @apply bg-muted rounded-lg;
+  }
+  
+  .scrollbar-enterprise::-webkit-scrollbar-thumb {
+    @apply bg-muted-foreground/30 rounded-lg hover:bg-muted-foreground/50;
+  }
+
+  /* Responsive Sidebar Utilities */
+  .sidebar-collapsed {
+    @apply w-16;
+  }
+  
+  .sidebar-expanded {
+    @apply w-64;
+  }
+  
+  .main-with-sidebar {
+    @apply transition-all duration-300;
+  }
+  
+  .main-sidebar-collapsed {
+    @apply pl-16;
+  }
+  
+  .main-sidebar-expanded {
+    @apply pl-64;
+  }
+  
+  /* Enhanced Hover Effects with Vibrant Colors */
+  .card-hover {
+    @apply transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/40;
+  }
+  
+  .button-hover {
+    @apply transition-all duration-200 hover:scale-105 hover:shadow-md;
+  }
+  
+  /* Vibrant Gradient Backgrounds */
+  .gradient-primary {
+    background: linear-gradient(to right, hsl(var(--primary)), hsl(var(--warning)), hsl(var(--accent)));
+  }
+  
+  /* Enhanced Tab Styling with Charming Colors */
+  .data-\[state\=active\] {
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transform: translateY(-1px);
+    transition: all 0.2s ease-out;
+    font-weight: 600;
+  }
+
+  .data-\[state\=active\]::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.3), transparent);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  /* Tab Hover Effects */
+  .data-\[state\=inactive\]:hover {
+    transform: translateY(-0.5px);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    transition: all 0.2s ease-out;
+  }
+
+  /* Individual Tab Color Enhancements */
+  .tab-overview.data-\[state\=active\] {
+    background: linear-gradient(135deg, #f59e0b, #f97316);
+    color: white;
+  }
+
+  .tab-business.data-\[state\=active\] {
+    background: linear-gradient(135deg, #3b82f6, #4f46e5);
+    color: white;
+  }
+
+  .tab-feasibility.data-\[state\=active\] {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+  }
+
+  .tab-charter.data-\[state\=active\] {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    color: white;
+  }
+
+  .tab-scope.data-\[state\=active\] {
+    background: linear-gradient(135deg, #06b6d4, #0891b2);
+    color: white;
+  }
+
+  .tab-rfp.data-\[state\=active\] {
+    background: linear-gradient(135deg, #f43f5e, #ec4899);
+    color: white;
+  }
+
+  .tab-roadmap.data-\[state\=active\] {
+    background: linear-gradient(135deg, #475569, #374151);
+    color: white;
+  }
+
+  .tab-diagrams.data-\[state\=active\] {
+    background: linear-gradient(135deg, #f59e0b, #eab308);
+    color: white;
+  }
+
+  .tab-analytics.data-\[state\=active\] {
+    background: linear-gradient(135deg, #d946ef, #ec4899);
+    color: white;
+  }
+
+  .tab-enterprise.data-\[state\=active\] {
+    background: linear-gradient(135deg, #059669, #0d9488);
+    color: white;
+  }
+
+  .tab-export.data-\[state\=active\] {
+    background: linear-gradient(135deg, #0ea5e9, #3b82f6);
+    color: white;
+  }
+  
+  .gradient-success {
+    background: linear-gradient(to right, hsl(var(--success)), hsl(var(--primary)));
+  }
+  
+  .gradient-text {
+    background: linear-gradient(to right, hsl(var(--primary)), hsl(var(--warning)), hsl(var(--success)));
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+  
+  /* Enhanced Focus States */
+  .focus-vibrant:focus {
+    @apply ring-2 ring-primary ring-offset-2 ring-offset-background;
+  }
+  
+  /* High Contrast Text Classes */
+  .text-high-contrast {
+    @apply text-foreground font-medium;
+  }
+  
+  .text-readable-on-primary {
+    @apply text-primary-foreground font-semibold;
+  }
+  
+  .text-readable-on-accent {
+    @apply text-accent-foreground font-semibold;
+  }
+  
+  /* Vibrant Alert Variants */
+  .alert-vibrant-success {
+    @apply border-success/30 bg-success/10 text-success;
+  }
+  
+  .alert-vibrant-warning {
+    @apply border-warning/30 bg-warning/10 text-warning;
+  }
+  
+  .alert-vibrant-info {
+    @apply border-accent/30 bg-accent/10 text-accent-foreground;
+  }
+}
