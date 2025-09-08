@@ -1,4 +1,4 @@
-import { DevvAI, DevvImageGen } from '@devvai/devv-code-backend';
+import { openSourceLLM } from '../lib/open-source-llm';
 
 export interface DiagramGenerationRequest {
   title: string;
@@ -17,12 +17,11 @@ export interface DiagramGenerationResult {
 }
 
 export class AIDiagramService {
-  private ai: DevvAI;
-  private imageGen: DevvImageGen;
+  private ai: any;
+  private llmBackendUrl: string = 'http://localhost:4001';
 
   constructor() {
-    this.ai = new DevvAI();
-    this.imageGen = new DevvImageGen();
+    this.ai = openSourceLLM;
   }
 
   /**
@@ -33,8 +32,8 @@ export class AIDiagramService {
       // Step 1: Generate diagram concept and Mermaid code using AI
       const conceptPrompt = this.buildConceptPrompt(request);
       
-      const conceptResponse = await this.ai.chat.completions.create({
-        model: 'kimi-k2-0711-preview', // Use Kimi for technical analysis
+      const conceptResponse = await this.ai.createChatCompletion({
+        model: 'graph', // Use graph-specialized model
         messages: [
           {
             role: 'system',

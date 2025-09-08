@@ -7,10 +7,22 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "migrate:devvai": "node scripts/migrate-to-open-source.js",
+    "setup:local-llm": "node scripts/setup-local-llm.js",
+    "test:migration": "node scripts/test-migration.js",
+    "test:ai-migration": "node scripts/test-ai-migration.js",
+    "start:llm-server": "cd llm-backend && node server.js",
+    "migrate:complete": "node scripts/complete-migration.js"
   },
   "dependencies": {
-    "@devvai/devv-code-backend": "^1.0.0",
+    "langchain": "^0.1.12",
+    "openai": "^4.24.1",
+    "llama-node": "^0.1.6",
+    "mistral-client": "^2.0.0",
+    "replicate-api": "^0.4.0",
+    "ollama": "^0.4.3",
+    "local-llm": "^0.9.1",
     "@hookform/resolvers": "^5.0.1",
     "@radix-ui/react-accordion": "^1.2.8",
     "@radix-ui/react-alert-dialog": "^1.1.11",
@@ -83,6 +95,9 @@
     "tailwindcss": "3",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.26.1",
-    "vite": "^6.3.1"
+    "vite": "^6.3.1",
+    "vitest": "^1.4.0",
+    "jsdom": "^24.0.0",
+    "@vitest/coverage-v8": "^1.4.0"
   }
 }

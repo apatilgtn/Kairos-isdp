@@ -13,18 +13,56 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   // Safe store access with error handling
   const authStore = useAuthStore();
   const isAuthenticated = authStore?.isAuthenticated || false;
+  const isInitialized = authStore?.isInitialized || false;
   const user = authStore?.user;
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        // Give time for store hydration
-        await new Promise(resolve => setTimeout(resolve, 50));
-        
         if (!authStore) {
           throw new Error('Auth store not available');
         }
         
+        // Check localStorage directly for more reliable auth detection
+        const checkLocalStorageAuth = () => {
+          try {
+            const authData = localStorage.getItem('mvp-auth-storage');
+            if (authData) {
+              const parsed = JSON.parse(authData);
+              return parsed.state?.user?.uid ? true : false;
+            }
+          } catch (e) {
+            console.error('Failed to parse auth data:', e);
+          }
+          return false;
+        };
+        
+        const hasPersistedAuth = checkLocalStorageAuth();
+        console.log('Auth check:', { 
+          hasPersistedAuth, 
+          isInitialized, 
+          isAuthenticated, 
+          hasUser: !!user 
+        });
+        
+        // If we have persisted auth but store isn't authenticated, initialize it
+        if (hasPersistedAuth && !isAuthenticated && isInitialized) {
+          console.log('Found persisted auth, reinitializing store');
+          authStore.initialize();
+          // Give it a moment to process
+          await new Promise(resolve => setTimeout(resolve, 100));
+        }
+        
+        // Wait for the store to be properly initialized
+        if (!isInitialized && !hasPersistedAuth) {
+          console.log('Waiting for auth store initialization...');
+          return;
+        }
+        
+        console.log('Auth check complete:', { 
+          isAuthenticated: authStore.isAuthenticated, 
+          user: !!authStore.user 
+        });
         setIsChecking(false);
       } catch (error) {
         console.error('Auth check failed:', error);
@@ -34,7 +72,21 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     };
 
     checkAuth();
-  }, [authStore]);
+    
+    // Retry check every 100ms until initialized
+    const interval = setInterval(() => {
+      if (!isInitialized || isChecking) {
+        checkAuth();
+      } else {
+        clearInterval(interval);
+      }
+    }, 100);
+    
+    // Cleanup interval after 5 seconds max
+    setTimeout(() => clearInterval(interval), 5000);
+    
+    return () => clearInterval(interval);
+  }, [authStore, isInitialized, isAuthenticated, user, isChecking]);
 
   if (authError) {
     console.error('ProtectedRoute auth error:', authError);

@@ -2,13 +2,16 @@ import React, { Suspense, useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from '@/components/ui/toaster';
 import { AppFallback } from './components/AppFallback';
-import { ProtectedRoute } from './components/ProtectedRoute';
-import { useAuthStore } from '@/store/auth-store';
+import { SimpleProtectedRoute } from './components/SimpleProtectedRoute';
+import RegisterPage from './pages/RegisterPage';
+import { useSimpleAuthStore } from '@/store/simple-auth-store';
+import { DevvAIDebugPanel } from './components/DevvAIDebugPanel';
 
 // Lazy load components to prevent initialization issues
 const LoginPage = React.lazy(() => import('./pages/LoginPage').then(module => ({ default: module.LoginPage })));
 const HomePage = React.lazy(() => import('./pages/HomePage').then(module => ({ default: module.HomePage })));
 const ProjectsPage = React.lazy(() => import('./pages/ProjectsPage').then(module => ({ default: module.ProjectsPage })));
+const ChatPage = React.lazy(() => import('./pages/ChatPage').then(module => ({ default: module.ChatPage })));
 const TeamsPage = React.lazy(() => import('./pages/TeamsPage').then(module => ({ default: module.TeamsPage })));
 const AnalyticsHubPage = React.lazy(() => import('./pages/AnalyticsHubPage').then(module => ({ default: module.AnalyticsHubPage })));
 const DocumentsPage = React.lazy(() => import('./pages/DocumentsPage').then(module => ({ default: module.DocumentsPage })));
@@ -36,7 +39,7 @@ export const App: React.FC = () => {
   const [initError, setInitError] = useState<string | null>(null);
   
   // Safe store access
-  const isAuthenticated = useAuthStore?.getState?.()?.isAuthenticated || false;
+  const isAuthenticated = useSimpleAuthStore?.getState?.()?.isAuthenticated || false;
 
   useEffect(() => {
     // Initialize app safely
@@ -46,7 +49,7 @@ export const App: React.FC = () => {
         await new Promise(resolve => setTimeout(resolve, 100));
         
         // Validate stores are properly initialized
-        const authStore = useAuthStore.getState();
+        const authStore = useSimpleAuthStore.getState();
         if (!authStore) {
           throw new Error('Authentication store not initialized');
         }
@@ -74,84 +77,19 @@ export const App: React.FC = () => {
       <div className="App">
         <Suspense fallback={<AppLoading />}>
           <Routes>
-            <Route 
-              path="/login" 
-              element={
-                isAuthenticated ? <Navigate to="/" replace /> : <LoginPage />
-              } 
-            />
-            <Route
-              path="/"
-              element={
-                <ProtectedRoute>
-                  <HomePage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/projects"
-              element={
-                <ProtectedRoute>
-                  <ProjectsPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/teams"
-              element={
-                <ProtectedRoute>
-                  <TeamsPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/analytics-hub"
-              element={
-                <ProtectedRoute>
-                  <AnalyticsHubPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/documents"
-              element={
-                <ProtectedRoute>
-                  <DocumentsPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/enterprise"
-              element={
-                <ProtectedRoute>
-                  <EnterprisePage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/reports"
-              element={
-                <ProtectedRoute>
-                  <ReportsPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/test"
-              element={
-                <ProtectedRoute>
-                  <TestAIPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/settings"
-              element={
-                <ProtectedRoute>
-                  <SettingsPage />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="/login" element={isAuthenticated ? <Navigate to="/" replace /> : <LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/debug" element={<DevvAIDebugPanel />} />
+            <Route path="/" element={<SimpleProtectedRoute><HomePage /></SimpleProtectedRoute>} />
+            <Route path="/projects" element={<SimpleProtectedRoute><ProjectsPage /></SimpleProtectedRoute>} />
+            <Route path="/chat" element={<SimpleProtectedRoute><ChatPage /></SimpleProtectedRoute>} />
+            <Route path="/teams" element={<SimpleProtectedRoute><TeamsPage /></SimpleProtectedRoute>} />
+            <Route path="/analytics-hub" element={<SimpleProtectedRoute><AnalyticsHubPage /></SimpleProtectedRoute>} />
+            <Route path="/documents" element={<SimpleProtectedRoute><DocumentsPage /></SimpleProtectedRoute>} />
+            <Route path="/enterprise" element={<SimpleProtectedRoute><EnterprisePage /></SimpleProtectedRoute>} />
+            <Route path="/reports" element={<SimpleProtectedRoute><ReportsPage /></SimpleProtectedRoute>} />
+            <Route path="/test" element={<SimpleProtectedRoute><TestAIPage /></SimpleProtectedRoute>} />
+            <Route path="/settings" element={<SimpleProtectedRoute><SettingsPage /></SimpleProtectedRoute>} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </Suspense>

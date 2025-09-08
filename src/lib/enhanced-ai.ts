@@ -1,4 +1,4 @@
-import { DevvAI } from '@devvai/devv-code-backend';
+import { openSourceLLM } from './open-source-llm';
 import type { MVPProject, AIGenerationResponse } from '@/types';
 
 // Industry-specific persona and template system
@@ -273,10 +273,10 @@ Emphasize customer experience, conversion optimization, and operational efficien
 ];
 
 export class EnhancedAIService {
-  private ai: DevvAI;
+  private ai: any;
 
   constructor() {
-    this.ai = new DevvAI();
+    this.ai = openSourceLLM;
   }
 
   // Get appropriate persona for project industry
@@ -315,8 +315,16 @@ export class EnhancedAIService {
     try {
       console.log(`Using persona: ${persona.name} for ${documentType} generation`);
       
-      const response = await this.ai.chat.completions.create({
-        model: persona.model,
+      // Map model names to our open-source LLM models
+      const modelMap: Record<string, string> = {
+        'default': 'default',
+        'kimi-k2-0711-preview': 'advanced', // Use advanced model for kimi requests
+      };
+      
+      const modelName = modelMap[persona.model] || 'default';
+      
+      const response = await this.ai.createChatCompletion({
+        model: modelName,
         messages: [
           {
             role: 'system',

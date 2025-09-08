@@ -1,41 +1,70 @@
-import { DevvAI } from '@devvai/devv-code-backend';
+import { openSourceLLM } from './open-source-llm';
 import type { MVPProject, AIGenerationResponse } from '@/types';
 
 // Initialize AI client
-const ai = new DevvAI();
+const ai = openSourceLLM;
 
 // Optimized generation templates with concise, focused prompts
 const GENERATION_TEMPLATES = {
   roadmap: {
     systemPrompt: "You are a senior product strategist specializing in MVP roadmaps. Create actionable, realistic roadmaps with specific timelines and measurable outcomes.",
-    userPrompt: (project: MVPProject) => `Create a comprehensive MVP roadmap for "${project.name}" in ${project.industry}.
+    userPrompt: (project: MVPProject) => `DOCUMENT GENERATION REQUEST: Create a comprehensive business roadmap for a mobile banking application.
 
-Problem: ${project.problem_statement}
+Project Details:
+- Name: ${project.name}
+- Industry: ${project.industry}  
+- Problem Statement: ${project.problem_statement}
 
-Structure:
+GENERATE A DETAILED ROADMAP DOCUMENT WITH:
+
+# ${project.name} MVP Roadmap
+
 ## Executive Summary
-- Value proposition & target market
-- 12-month outcomes & competitive advantage
+Write 2-3 paragraphs covering:
+- Clear value proposition and target market definition
+- 12-month business outcomes and competitive advantages
+- Market opportunity size and validation
 
-## Core MVP Features (Max 6)
-For each: Name, user story, priority, effort (XS/S/M/L/XL), success metric
+## Core MVP Features (Maximum 6 Features)
+For each feature provide:
+1. Feature Name and detailed user story
+2. Priority ranking (Critical/High/Medium)
+3. Development effort estimate (1-4 weeks)
+4. Specific success metrics and KPIs
 
-## Development Timeline (16 weeks)
-- Phase 1 (Weeks 1-6): Foundation
-- Phase 2 (Weeks 7-12): Core Features  
-- Phase 3 (Weeks 13-16): Launch Prep
+## 16-Week Development Timeline
+Phase 1 (Weeks 1-6): Foundation Development
+- Technical architecture setup
+- Core infrastructure and security
+- Basic user authentication
 
-## Risk Analysis & KPIs
-- Technical, market, resource risks with mitigation
-- User acquisition, engagement, business metrics
+Phase 2 (Weeks 7-12): Core Feature Development  
+- Primary feature implementation
+- Integration with banking APIs
+- Initial user testing
+
+Phase 3 (Weeks 13-16): Launch Preparation
+- Performance optimization
+- Security audits and compliance
+- Marketing launch preparation
+
+## Risk Analysis & Mitigation
+Identify and address:
+- Top 3 technical implementation risks
+- Top 3 market/competitive risks  
+- Resource and timeline risk factors
+- Specific mitigation strategies for each
 
 ## Go-to-Market Strategy
-- Target customer profile & launch strategy
-- Marketing channels with budget estimates
+Define:
+- Primary target customer segments with demographics
+- Marketing channel strategy with budget allocation
+- User acquisition targets for first 6 months
+- Revenue projections and business metrics
 
-Use professional markdown. Be specific with numbers, timelines, and actionable steps.`,
+IMPORTANT: Generate substantial detailed content for each section. This should be a comprehensive business document suitable for stakeholder presentation.`,
     temperature: 0.3,
-    maxTokens: 2000
+    maxTokens: 2500
   },
 
   elevatorPitch: {
@@ -280,8 +309,8 @@ export class OptimizedGenerationService {
 
       let response;
       try {
-        response = await ai.chat.completions.create({
-          model: modelToUse,
+        response = await ai.createChatCompletion({
+          model: modelToUse === 'kimi-k2-0711-preview' ? 'default' : modelToUse, // Use default model instead of kimi
           messages: [
             {
               role: 'system',
@@ -298,7 +327,7 @@ export class OptimizedGenerationService {
       } catch (modelError) {
         if (modelToUse === 'kimi-k2-0711-preview') {
           console.log('Kimi model failed, falling back to default model:', modelError);
-          response = await ai.chat.completions.create({
+          response = await ai.createChatCompletion({
             model: 'default',
             messages: [
               {
@@ -413,8 +442,8 @@ ENHANCED_CONTENT: [Complete enhanced document OR "NONE" if no changes needed]
 
 Focus on: specificity, actionability, professional formatting, measurable outcomes.`;
 
-      const response = await ai.chat.completions.create({
-        model: 'kimi-k2-0711-preview',
+      const response = await ai.createChatCompletion({
+        model: 'default', // Use default model instead of kimi
         messages: [
           {
             role: 'system',

@@ -1,0 +1,78 @@
+# Local LLM Server Configuration
+#
+# This configuration file is used by the local LLM server
+# to determine which models to load and how to serve them.
+
+# Server settings
+server:
+  host: 0.0.0.0
+  port: 11434
+  cors:
+    enabled: true
+    allowed_origins: ["*"]
+  concurrency: 8
+  context_size: 4096
+
+# Models configuration
+models:
+  - name: llama3-8b
+    path: ~/.ollama/models/llama3-8b
+    type: llama
+    parameters:
+      temperature: 0.7
+      top_p: 0.9
+      repetition_penalty: 1.1
+  
+  - name: mistral-7b
+    path: ~/.ollama/models/mistral-7b
+    type: mistral
+    parameters:
+      temperature: 0.7
+      top_p: 0.9
+      repetition_penalty: 1.1
+  
+  - name: gemma-7b
+    path: ~/.ollama/models/gemma-7b
+    type: gemma
+    parameters:
+      temperature: 0.7
+      top_p: 0.9
+      repetition_penalty: 1.1
+  
+  - name: stable-diffusion-3
+    path: ~/.ollama/models/stable-diffusion-3
+    type: diffusion
+    parameters:
+      steps: 50
+      guidance_scale: 7.5
+
+# Task-specific model mappings
+tasks:
+  text: llama3-8b
+  chat: llama3-8b
+  code: llama3-8b
+  analysis: mistral-7b
+  graph: mistral-7b
+  image: stable-diffusion-3
+
+# API compatibility settings
+compatibility:
+  openai: true       # OpenAI API compatibility
+  anthropic: false   # Anthropic API compatibility
+  devvai: true       # DevvAI API compatibility
+
+# Logging configuration
+logging:
+  level: info
+  format: json
+  output: stdout
+
+# Advanced settings
+advanced:
+  cache:
+    enabled: true
+    max_size: 1024    # Maximum cache size in MB
+  quantization: 4     # Quantization level (4=4bit, 8=8bit, etc.)
+  threads: 0          # 0 = auto-detect number of threads
+  batch_size: 512     # Batch size for inference
+  gpu_layers: -1      # -1 = auto-detect GPU capability

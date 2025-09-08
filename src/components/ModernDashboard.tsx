@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useAuthStore } from '@/store/auth-store';
+import { useSimpleAuthStore } from '@/store/simple-auth-store';
 import { useAppStore } from '@/store/app-store';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -28,7 +28,7 @@ import type { MVPProject } from '@/types';
 
 export const ModernDashboard: React.FC = () => {
   // Safe store access with error handling
-  const authStore = useAuthStore();
+  const authStore = useSimpleAuthStore();
   const appStore = useAppStore();
   
   const user = authStore?.user;

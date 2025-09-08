@@ -3,7 +3,7 @@
  * Provides advanced document analysis, quality scoring, and content optimization
  */
 
-import { DevvAI } from '@devvai/devv-code-backend';
+import { openSourceLLM } from './open-source-llm';
 import type { RoadmapDocument, UserDiagram, MVPProject } from '@/types';
 
 export interface DocumentAnalysis {
@@ -133,10 +133,9 @@ export class EnhancedAIAnalysisEngine {
       // Generate comprehensive analysis prompt
       const analysisPrompt = this.generateDocumentAnalysisPrompt(document, allDocuments, project);
       
-      // Use Kimi model for detailed analysis
-      const ai = new DevvAI();
-      const analysisResponse = await ai.chat.completions.create({
-        model: 'kimi-k2-0711-preview',
+      // Use advanced model for detailed analysis
+      const analysisResponse = await openSourceLLM.createChatCompletion({
+        model: 'advanced',
         messages: [
           { role: 'system', content: 'You are an expert document analyst specializing in strategic business documents.' },
           { role: 'user', content: analysisPrompt }
@@ -194,10 +193,9 @@ export class EnhancedAIAnalysisEngine {
       // Generate comprehensive project analysis prompt
       const intelligencePrompt = this.generateIntelligencePrompt(project, documents, diagrams);
       
-      // Use Kimi model for deep analysis
-      const ai = new DevvAI();
-      const response = await ai.chat.completions.create({
-        model: 'kimi-k2-0711-preview',
+      // Use advanced model for deep analysis
+      const response = await openSourceLLM.createChatCompletion({
+        model: 'advanced',
         messages: [
           { role: 'system', content: 'You are a strategic content intelligence analyst specializing in business document portfolios.' },
           { role: 'user', content: intelligencePrompt }
@@ -233,8 +231,7 @@ export class EnhancedAIAnalysisEngine {
 
       const optimizationPrompt = this.generateStakeholderOptimizationPrompt(document, audience, project);
       
-      const ai = new DevvAI();
-      const response = await ai.chat.completions.create({
+      const response = await openSourceLLM.createChatCompletion({
         model: 'default',
         messages: [
           { role: 'system', content: 'You are a communication optimization expert specializing in audience-specific content adaptation.' },

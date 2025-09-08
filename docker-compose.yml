@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  llm-server:
+    image: ollama/ollama:latest
+    container_name: kairos-llm-server
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-models:/root/.ollama
+      - ./llm-server.config.yaml:/etc/ollama/config.yaml
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+      - OLLAMA_MODELS=llama3:8b,mistral:7b-instruct-v0.2,gemma:7b-instruct,stable-diffusion:3
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  llm-backend:
+    build:
+      context: ./llm-backend
+      dockerfile: Dockerfile
+    container_name: kairos-llm-backend
+    restart: unless-stopped
+    ports:
+      - "4001:4001"
+    depends_on:
+      - llm-server
+    environment:
+      - OLLAMA_API_URL=http://llm-server:11434
+      - PORT=4001
+      - NODE_ENV=production
+    volumes:
+      - ./llm-backend:/app
+      - /app/node_modules
+
+volumes:
+  ollama-models:

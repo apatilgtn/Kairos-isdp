@@ -1,4 +1,4 @@
-import { DevvAI } from '@devvai/devv-code-backend';
+import { openSourceLLM } from './open-source-llm';
 import type { RoadmapDocument, MVPProject, UserDiagram } from '@/types';
 
 export interface DiagramGenerationRequest {
@@ -136,10 +136,10 @@ sequenceDiagram
 };
 
 export class EnhancedDiagramService {
-  private ai: DevvAI;
+  private ai: any;
 
   constructor() {
-    this.ai = new DevvAI();
+    this.ai = openSourceLLM;
   }
 
   // Generate context-aware diagram from any document type
@@ -152,8 +152,8 @@ export class EnhancedDiagramService {
     const prompt = this.buildDiagramPrompt(documentType, documentContent, project, selectedType, complexity);
     
     try {
-      const response = await this.ai.chat.completions.create({
-        model: 'kimi-k2-0711-preview', // Better for structured output
+      const response = await this.ai.createChatCompletion({
+        model: 'default', // Use available model
         messages: [
           {
             role: 'system',
@@ -248,8 +248,8 @@ Return as JSON format:
 `;
 
     try {
-      const response = await this.ai.chat.completions.create({
-        model: 'kimi-k2-0711-preview',
+      const response = await this.ai.createChatCompletion({
+        model: 'default',
         messages: [
           {
             role: 'system',
@@ -311,7 +311,7 @@ Return as a simple list of suggestions.
 `;
 
     try {
-      const response = await this.ai.chat.completions.create({
+      const response = await this.ai.createChatCompletion({
         model: 'default',
         messages: [
           {

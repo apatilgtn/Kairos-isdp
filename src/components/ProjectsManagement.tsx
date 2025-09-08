@@ -31,7 +31,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAppStore } from '@/store/app-store';
-import { useAuthStore } from '@/store/auth-store';
+import { useSimpleAuthStore } from '@/store/simple-auth-store';
 import { CreateProjectDialog } from '@/components/CreateProjectDialog';
 import { APIService } from '@/lib/api';
 import type { MVPProject } from '@/types';
@@ -67,7 +67,7 @@ const priorityConfig = {
 };
 
 export const ProjectsManagement: React.FC = () => {
-  const { user } = useAuthStore();
+  const { user } = useSimpleAuthStore();
   const { addNotification } = useAppStore();
   
   // State
@@ -165,12 +165,14 @@ export const ProjectsManagement: React.FC = () => {
 
   // Filter projects based on search and status
   const filteredProjects = projects.filter(project => {
+    const projectStatus = project.status || 'draft'; // Default to 'draft' if status is missing
+    
     const matchesSearch = searchTerm === '' || 
       project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (project.problem_statement && project.problem_statement.toLowerCase().includes(searchTerm.toLowerCase())) ||
       project.industry.toLowerCase().includes(searchTerm.toLowerCase());
     
-    const matchesStatus = filterStatus === 'all' || project.status === filterStatus;
+    const matchesStatus = filterStatus === 'all' || projectStatus === filterStatus;
     
     return matchesSearch && matchesStatus;
   });
@@ -178,10 +180,10 @@ export const ProjectsManagement: React.FC = () => {
   // Calculate statistics
   const stats = {
     total: projects.length,
-    active: projects.filter(p => p.status === 'active').length,
-    completed: projects.filter(p => p.status === 'completed').length,
-    paused: projects.filter(p => p.status === 'paused').length,
-    draft: projects.filter(p => p.status === 'draft').length
+    active: projects.filter(p => (p.status || 'draft') === 'active').length,
+    completed: projects.filter(p => (p.status || 'draft') === 'completed').length,
+    paused: projects.filter(p => (p.status || 'draft') === 'paused').length,
+    draft: projects.filter(p => (p.status || 'draft') === 'draft').length
   };
 
   const formatDate = (timestamp: number) => {
@@ -192,8 +194,9 @@ export const ProjectsManagement: React.FC = () => {
     });
   };
 
-  const getStatusIcon = (status: MVPProject['status']) => {
-    const IconComponent = statusConfig[status]?.icon || FileText;
+  const getStatusIcon = (status: MVPProject['status'] | undefined) => {
+    const safeStatus = status || 'draft';
+    const IconComponent = statusConfig[safeStatus]?.icon || FileText;
     return <IconComponent className="h-4 w-4" />;
   };
 
@@ -202,15 +205,16 @@ export const ProjectsManagement: React.FC = () => {
     const teamMembers = Math.floor(Math.random() * 10) + 1; // Mock team size
     const documentsCount = Math.floor(Math.random() * 20) + 1; // Mock document count
     const aiGenerationsCount = Math.floor(Math.random() * 50) + 1; // Mock AI generations
+    const projectStatus = project.status || 'draft'; // Default to 'draft' if status is missing
     
     return (
       <Card className="group bg-white/80 backdrop-blur-sm border-0 shadow-sm hover:shadow-lg transition-all duration-300 hover:bg-white/90">
         <CardHeader className="pb-3">
           <div className="flex items-start justify-between">
             <div className="flex items-center space-x-2">
-              <Badge variant="outline" className={statusConfig[project.status].color}>
-                {getStatusIcon(project.status)}
-                <span className="ml-1">{statusConfig[project.status].label}</span>
+              <Badge variant="outline" className={statusConfig[projectStatus].color}>
+                {getStatusIcon(projectStatus)}
+                <span className="ml-1">{statusConfig[projectStatus].label}</span>
               </Badge>
               <Badge variant="outline" className="text-xs">
                 High Priority
@@ -289,13 +293,14 @@ export const ProjectsManagement: React.FC = () => {
   const ProjectRow: React.FC<{ project: MVPProject }> = ({ project }) => {
     const progress = Math.floor(Math.random() * 100);
     const teamMembers = Math.floor(Math.random() * 10) + 1;
+    const projectStatus = project.status || 'draft'; // Default to 'draft' if status is missing
     
     return (
       <Card className="mb-2">
         <CardContent className="p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4 flex-1">
-              {getStatusIcon(project.status)}
+              {getStatusIcon(projectStatus)}
               
               <div className="flex-1 min-w-0">
                 <h3 className="font-semibold text-sm truncate">{project.name}</h3>

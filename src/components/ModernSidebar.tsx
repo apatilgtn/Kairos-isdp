@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useAuthStore } from '@/store/auth-store';
+import { useSimpleAuthStore } from '@/store/simple-auth-store';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
@@ -28,7 +28,7 @@ interface ModernSidebarProps {
 export const ModernSidebar: React.FC<ModernSidebarProps> = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, logout } = useAuthStore();
+  const { user, logout } = useSimpleAuthStore();
 
   const navigationItems = [
     {
