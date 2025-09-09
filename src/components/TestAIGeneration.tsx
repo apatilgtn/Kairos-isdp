@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { APIService } from '@/lib/api';
 import { Loader2, TestTube, CheckCircle, XCircle, Clock } from 'lucide-react';
+import { AIGenerationTest } from './AIGenerationTest';
 import type { MVPProject } from '@/types';
 
 // Test project data for validating AI generation quality
@@ -330,6 +331,9 @@ export const TestAIGeneration: React.FC = () => {
           </ScrollArea>
         </CardContent>
       </Card>
+
+      {/* New Unified AI Test */}
+      <AIGenerationTest project={TEST_PROJECTS[0]} />
 
       {/* Quality Criteria Reference */}
       <Card>

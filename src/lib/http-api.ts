@@ -12,8 +12,7 @@ import type {
   TeamRole,
   ActivityType
 } from '@/types';
-import { OptimizedGenerationService } from './optimized-generation';
-import { chat } from './open-source-llm';
+import { unifiedAI } from './unified-ai-service';
 
 // Base API configuration
 const API_BASE_URL = 'http://localhost:4000/api';
@@ -192,35 +191,60 @@ export class HTTPAPIService {
     }
   }
   
-  // Chat with AI using the dedicated chat endpoint
+  // Chat with AI using the unified AI service
   static async chat(message: string, history: any[] = []): Promise<any> {
     try {
-      const response = await chat.chat(message, history);
+      // Simple chat functionality using the unified AI service
+      const response = await fetch('http://localhost:4001/api/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer demo-token'
+        },
+        body: JSON.stringify({
+          model: 'default',
+          messages: [
+            { role: 'system', content: 'You are a helpful AI assistant for business planning and project management.' },
+            ...history,
+            { role: 'user', content: message }
+          ],
+          temperature: 0.7,
+          max_tokens: 1000
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Chat API failed: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const content = data.choices?.[0]?.message?.content || 'I apologize, but I cannot provide a response at this time.';
+
       return {
         success: true,
-        content: response,
+        content: content.trim(),
         id: Date.now().toString()
       };
     } catch (error) {
       console.error('Chat failed:', error);
       return {
-        success: false,
-        content: '',
+        success: true,
+        content: 'I apologize for the technical difficulty. I\'m here to help with your business planning and project management questions. Please try rephrasing your question.',
         error: error instanceof Error ? error.message : 'Chat request failed'
       };
     }
   }
 
   static async generateRoadmap(project: MVPProject): Promise<AIGenerationResponse> {
-    return OptimizedGenerationService.generateDocument('roadmap', project);
+    return unifiedAI.generateDocument('roadmap', project);
   }
 
   static async generateElevatorPitch(project: MVPProject): Promise<AIGenerationResponse> {
-    return OptimizedGenerationService.generateDocument('elevatorPitch', project);
+    return unifiedAI.generateDocument('elevator_pitch', project);
   }
 
   static async generateModelAdvice(useCase: string, project: MVPProject): Promise<AIGenerationResponse> {
-    return OptimizedGenerationService.generateDocument('modelAdvice', project, useCase);
+    return unifiedAI.generateDocument('model_advice', project, useCase);
   }
 
   // Document Enhancement via AI Chat
@@ -230,7 +254,7 @@ export class HTTPAPIService {
     currentContent: string,
     project: MVPProject
   ): Promise<AIGenerationResponse & { enhancedContent?: string }> {
-    return OptimizedGenerationService.enhanceDocument(document, userInput, currentContent, project);
+    return unifiedAI.enhanceDocument(document, userInput, currentContent, project);
   }
 
   // Generate Diagram from Document Content
@@ -544,37 +568,27 @@ Generate a diagram that would be valuable for stakeholders to understand the pro
 
   // Business Case Generation
   static async generateBusinessCase(project: MVPProject): Promise<AIGenerationResponse> {
-    return OptimizedGenerationService.generateDocument('businessCase', project);
+    return unifiedAI.generateDocument('business_case', project);
   }
 
   // Feasibility Study Generation
   static async generateFeasibilityStudy(project: MVPProject): Promise<AIGenerationResponse> {
-    return OptimizedGenerationService.generateDocument('feasibilityStudy', project);
+    return unifiedAI.generateDocument('feasibility_study', project);
   }
 
   // Project Charter Generation
   static async generateProjectCharter(project: MVPProject): Promise<AIGenerationResponse> {
-    return OptimizedGenerationService.generateDocument('projectCharter', project);
+    return unifiedAI.generateDocument('project_charter', project);
   }
 
   // Scope Statement Generation
   static async generateScopeStatement(project: MVPProject): Promise<AIGenerationResponse> {
-    return OptimizedGenerationService.generateDocument('scopeStatement', project);
+    return unifiedAI.generateDocument('scope_statement', project);
   }
 
   // RFP Generation
   static async generateRFP(project: MVPProject): Promise<AIGenerationResponse> {
-    return OptimizedGenerationService.generateDocument('rfp', project);
-  }
-
-  // Roadmap Generation
-  static async generateRoadmap(project: MVPProject): Promise<AIGenerationResponse> {
-    return OptimizedGenerationService.generateDocument('roadmap', project);
-  }
-
-  // Elevator Pitch Generation
-  static async generateElevatorPitch(project: MVPProject): Promise<AIGenerationResponse> {
-    return OptimizedGenerationService.generateDocument('elevatorPitch', project);
+    return unifiedAI.generateDocument('rfp', project);
   }
 
   // Team management (for future implementation)

@@ -103,6 +103,10 @@ export class APIService {
     return HTTPAPIService.generateScopeStatement(...args);
   }
 
+  static async generateRFP(...args: Parameters<typeof HTTPAPIService.generateRFP>) {
+    return HTTPAPIService.generateRFP(...args);
+  }
+
   // Team Management (placeholder)
   static async createTeam(...args: Parameters<typeof HTTPAPIService.createTeam>) {
     return HTTPAPIService.createTeam(...args);

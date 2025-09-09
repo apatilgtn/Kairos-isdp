@@ -4,10 +4,16 @@ echo "🚀 Starting Kairos services for demo..."
 
 # Kill any existing processes
 echo "Stopping existing services..."
-lsof -ti :4000,4001,5173 | xargs kill -9 2>/dev/null || true
+lsof -ti :4000,4001,5173,8888 | xargs kill -9 2>/dev/null || true
 
 # Wait a moment
 sleep 2
+
+# Start local Python LLM service
+echo "Starting local Python LLM service (port 8888)..."
+cd /Users/454469/Documents/GitHub/Kairos-isdp/llm-backend
+python3 local_llm_service.py --server &
+PYTHON_LLM_PID=$!
 
 # Start auth backend
 echo "Starting auth backend (port 4000)..."
@@ -35,11 +41,12 @@ echo "🔗 Access your app at: http://localhost:5173/"
 echo "🔑 Login with: admin / password"
 echo ""
 echo "Service PIDs:"
+echo "- Python LLM: $PYTHON_LLM_PID"
 echo "- Auth Backend: $AUTH_PID"
 echo "- LLM Backend: $LLM_PID" 
 echo "- Frontend: $FRONTEND_PID"
 echo ""
-echo "To stop all services: kill $AUTH_PID $LLM_PID $FRONTEND_PID"
+echo "To stop all services: kill $PYTHON_LLM_PID $AUTH_PID $LLM_PID $FRONTEND_PID"
 
 # Keep script running
 wait
